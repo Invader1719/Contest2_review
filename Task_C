@@ -1,0 +1,56 @@
+#include <algorithm>
+#include <deque>
+#include <iostream>
+
+void Balance(std::deque<int>& deq1, std::deque<int>& deq2) {
+  while ((static_cast<int>(deq2.size())) - (static_cast<int>(deq1.size())) >
+         0) {
+    deq1.push_back(deq2[0]);
+    deq2.pop_front();
+  }
+  while ((static_cast<int>(deq1.size())) - (static_cast<int>(deq2.size())) >
+         1) {
+    deq2.push_front(deq1[deq1.size() - 1]);
+    deq1.pop_back();
+  }
+}
+
+void Pushnormal(std::deque<int>& deq1, std::deque<int>& deq2, int num) {
+  deq2.push_back(num);
+  Balance(deq1, deq2);
+}
+
+void Pushvip(std::deque<int>& deq1, std::deque<int>& deq2, int num) {
+  deq1.push_back(num);
+  Balance(deq1, deq2);
+}
+
+void Leavedeq(std::deque<int>& deq1, std::deque<int>& deq2) {
+  std::cout << deq1[0] << '\n';
+  deq1.pop_front();
+  Balance(deq1, deq2);
+}
+
+int main() {
+  int nn;
+  std::cin >> nn;
+  std::deque<int> deq1;
+  std::deque<int> deq2;
+  for (int i = 0; i < nn; i++) {
+    char operation;
+    int num;
+    std::cin >> operation;
+    if (operation == '+') {
+      std::cin >> num;
+
+      Pushnormal(deq1, deq2, num);
+    } else if (operation == '*') {
+      std::cin >> num;
+
+      Pushvip(deq1, deq2, num);
+    } else if (operation == '-') {
+      Leavedeq(deq1, deq2);
+    }
+  }
+  return 0;
+}

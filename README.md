@@ -1,2 +1,3 @@
-# contest1_review
-Contest_1 Algorithms Mipt
+# contest2_review
+Contest_2 Algorithms Mipt
+ЭТО ВТОРОЙ КОНТЕСТ

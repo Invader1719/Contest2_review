@@ -3,19 +3,18 @@
 #include <string>
 #include <vector>
 
-struct Heap {
-  std::vector<std::pair<long long, long long>>
-      aa;  // реализация heap`ы, на первом месте
-           // значение, на втором номер запроса
+class Heap {
+public:
+
   std::vector<long long> indexes;
   Heap()
-      : aa(1, std::make_pair(-1, -1)){};  // делаю 1 нумерацию чтбы все работало
+          : array_(1, std::make_pair(-1, -1)){};  // делаю 1 нумерацию чтбы все работало
 
-  void Swap(long long inda1, long long inda2) {  // индексы элементов в aa
-    std::pair<long long, long long> tmp1 = aa[inda1];  // храню значения
-    std::pair<long long, long long> tmp2 = aa[inda2];
-    aa[inda1] = tmp2;  // обмен элементов
-    aa[inda2] = tmp1;
+  void Swap(long long inda1, long long inda2) {  // индексы элементов в array_
+    std::pair<long long, long long> tmp1 = array_[inda1];  // храню значения
+    std::pair<long long, long long> tmp2 = array_[inda2];
+    array_[inda1] = tmp2;  // обмен элементов
+    array_[inda2] = tmp1;
     indexes[tmp1.second] = inda2;  // обмен индексов в массиве indexes
     indexes[tmp2.second] = inda1;
   }
@@ -24,11 +23,11 @@ struct Heap {
     long long leftson = 2 * ind;       // Левый сын
     long long rightson = 2 * ind + 1;  // Правый сын
     long long father = ind;
-    long long heapsize = static_cast<long long>(aa.size());
-    if ((leftson <= heapsize - 1) and (aa[leftson] < aa[father])) {
+    long long heapsize = static_cast<long long>(array_.size());
+    if ((leftson <= heapsize - 1) and (array_[leftson] < array_[father])) {
       father = leftson;
     }
-    if ((rightson <= heapsize - 1) and (aa[rightson] < aa[father])) {
+    if ((rightson <= heapsize - 1) and (array_[rightson] < array_[father])) {
       father = rightson;
     }
     if (father != ind) {
@@ -39,37 +38,41 @@ struct Heap {
 
   void HeapDecreaseKey(long long reqest, long long delta) {
     long long inda =
-        indexes[reqest];  // в indexes индекс искомого элемента в куче aa
+            indexes[reqest];  // в indexes индекс искомого элемента в куче array_
     std::pair<long long, long long> elem = std::make_pair(
-        aa[inda].first - delta, aa[inda].second);  // уменьшаю элемент на дельту
-    aa[inda] = elem;
-    while ((inda > 1) and (aa[inda / 2].first > aa[inda].first)) {
+            array_[inda].first - delta, array_[inda].second);  // уменьшаю элемент на дельту
+    array_[inda] = elem;
+    while ((inda > 1) and (array_[inda / 2].first > array_[inda].first)) {
       Swap(inda, inda / 2);
       inda = inda / 2;
     }
   }
 
   void HeapInsert(long long elem, long long reqest) {
-    if (static_cast<long long>(aa.size()) == 1) {
-      aa.push_back(std::make_pair(elem, reqest));
+    if (static_cast<long long>(array_.size()) == 1) {
+      array_.push_back(std::make_pair(elem, reqest));
       indexes[reqest] = 1;
     } else {
-      aa.push_back(std::make_pair(0, reqest));
-      indexes[reqest] = static_cast<long long>(aa.size()) - 1;
+      array_.push_back(std::make_pair(0, reqest));
+      indexes[reqest] = static_cast<long long>(array_.size()) - 1;
       HeapDecreaseKey(reqest, -elem);
     }
   }
 
-  void GetMin() { std::cout << aa[1].first << '\n'; }
+  void GetMin() { std::cout << array_[1].first << '\n'; }
 
   void ExtraxtMin() {
-    aa[1] = aa[static_cast<long long>(aa.size()) - 1];
-    indexes[aa[1].second] = 1;
-    aa.pop_back();
-    if (aa.size() > 1) {
+    array_[1] = array_[static_cast<long long>(array_.size()) - 1];
+    indexes[array_[1].second] = 1;
+    array_.pop_back();
+    if (array_.size() > 1) {
       Heapify(1);
     }
   }
+private:
+  std::vector<std::pair<long long, long long>>
+          array_;  // реализация heap`ы, на первом месте
+  // значение, на втором номер запроса
 };
 
 void Input(Heap& hh, long long request) {
@@ -94,11 +97,11 @@ void Input(Heap& hh, long long request) {
 int main() {
   std::ios::sync_with_stdio(false);
   std::cin.tie(0);
-  long long nn;
+  long long amount;
   Heap hh;
-  std::cin >> nn;
-  hh.indexes.assign(nn + 1, -1);
-  for (long long i = 1; i <= nn; i++) {
+  std::cin >> amount;
+  hh.indexes.assign(amount + 1, -1);
+  for (long long i = 1; i <= amount; i++) {
     Input(hh, i);
   }
 }

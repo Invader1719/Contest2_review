@@ -1,0 +1,133 @@
+#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+
+class Deque {
+public:
+
+    void FunkRelocation() {
+      if (rightarray_.empty() and !leftarray_.empty()) {  // Если массив не пуст
+        int length = leftarray_.size();
+        rightarray_.push_back(leftarray_[length - 1]);
+        ramin_.push_back((leftarray_[length - 1]));
+        for (int i = length - 2; i >= 0; i--) {
+          rightarray_.push_back(leftarray_[i]);
+          ramin_.push_back(
+                  std::min(rightarray_[rightarray_.size() - 1], ramin_[ramin_.size() - 1]));
+        }
+        leftarray_.clear();
+        lamin_.clear();
+      }
+    }
+
+    void FunkEnqueue(int item) {
+      if (leftarray_.empty()) {
+        leftarray_.push_back(item);
+        lamin_.push_back(item);
+      } else {
+        leftarray_.push_back(item);
+        lamin_.push_back(std::min(lamin_[lamin_.size() - 1], item));
+      }
+      std::cout << "ok" << '\n';
+    }
+
+    void FunkDequeue() {
+      if (!rightarray_.empty()) {
+        std::cout << FunkDeleteLast() << '\n';
+      } else {
+        if (leftarray_.empty()) {
+          std::cout << "error" << '\n';
+        } else {
+          FunkRelocation();
+          std::cout << FunkDeleteLast() << '\n';
+        }
+      }
+    }
+
+    void FunkFront() {
+      if (!rightarray_.empty()) {
+        std::cout << rightarray_[rightarray_.size() - 1] << '\n';
+      } else if (!leftarray_.empty()) {
+        std::cout << leftarray_[0] << '\n';
+      } else {
+        std::cout << "error" << '\n';
+      }
+    }
+
+    void FunkSize() {
+      std::cout << static_cast<int>(leftarray_.size()) +
+                   static_cast<int>(rightarray_.size())
+                << '\n';
+    }
+
+    void Funkclear() {
+      leftarray_.clear();
+      lamin_.clear();
+      rightarray_.clear();
+      ramin_.clear();
+      std::cout << "ok" << '\n';
+    }
+
+    void Funkmin() {
+      if (lamin_.empty() and ramin_.empty()) {  // Проверка на то что не пуст
+        std::cout << "error" << '\n';
+      } else if (!lamin_.empty() and
+                 ramin_.empty()) {  // Первый массив не пуст, а второй пуст
+        int minl = lamin_[lamin_.size() - 1];
+        std::cout << minl << '\n';
+
+      } else if (lamin_.empty() and
+                 !ramin_.empty()) {  // Первый массив пуст, а не второй пуст
+
+        int minr = ramin_[ramin_.size() - 1];
+        std::cout << minr << '\n';
+      } else {  // оба не пусты, выбираем минимум из обоих
+        int minr = ramin_[ramin_.size() - 1];
+        int minl = lamin_[lamin_.size() - 1];
+        std::cout << std::min(minl, minr) << '\n';
+      }
+    }
+private:
+  std::vector<int> leftarray_;
+  std::vector<int> rightarray_;
+  std::vector<int> lamin_;
+  std::vector<int> ramin_;
+
+  int FunkDeleteLast() {
+    int elem = rightarray_[rightarray_.size() - 1];
+    rightarray_.pop_back();
+    ramin_.pop_back();
+    return elem;
+  }
+};
+
+
+void Input(int nn) {
+  Deque MyDeq;
+  for (int i = 0; i < nn; i++) {
+    std::string key;
+    std::cin >> key;
+    if (key == "enqueue") {
+      int iq;
+      std::cin >> iq;
+      MyDeq.FunkEnqueue(iq);
+    } else if (key == "dequeue") {
+      MyDeq.FunkDequeue();
+    } else if (key == "front") {
+      MyDeq.FunkFront();
+    } else if (key == "size") {
+      MyDeq.FunkSize();
+    } else if (key == "clear") {
+      MyDeq.Funkclear();
+    } else if (key == "min") {
+      MyDeq.Funkmin();
+    }
+  }
+}
+
+int main() {
+  int nn;
+  std::cin >> nn;
+  Input(nn);
+}
